@@ -5,7 +5,7 @@ public class Main {
         /* 
          * I was going to make a simple program with the ScratchAPI here, but I don't have an alt account
          * that I don't care if the password is shown, and Scratch won't let me register any accounts
-         * (the register page doesn't load)
+         * (the register page doesn't load).
          *
          */
     }
