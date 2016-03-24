@@ -5,6 +5,9 @@
     <property name="debuglevel" value="source,lines,vars"/>
     <property name="target" value="1.7"/>
     <property name="source" value="1.7"/>
+    <presetdef name="javac">
+        <javac includeantruntime="false" />
+    </presetdef>
     <path id="ScratchAPI.classpath">
         <pathelement location="bin"/>
         <pathelement location="lib/commons-cli-1.2.jar"/>
