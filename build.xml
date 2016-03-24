@@ -40,7 +40,10 @@
         <echo message="Compiling source code"/>
     </target>
     <target name="test">
-        <echo message="Test target is here..."/>
+        <echo message="Test target..."/>
+        <mkdir dir="bin"/>
+        <mkdir dir="bin/classes"/>
+        <javac srcdir="src" destdir="bin/classes"/>
     </target>
     <target depends="build-subprojects,build-project" name="build"/>
     <target name="build-subprojects"/>
