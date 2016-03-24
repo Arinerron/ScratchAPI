@@ -72,6 +72,9 @@ public class ScratchProject {
 
     public ScratchProject(final int id) {
         this.ID = id;
+        
+        /* To fetch the information when this instance is created, 
+        this could be called like: ScratchProject project = new ScratchProject(id).update(); */
     }
 
     public boolean comment(ScratchSession session, String comment) throws ScratchProjectException {
