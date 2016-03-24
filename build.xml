@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<project basedir="." default="build" name="ScratchAPI">
+    <property environment="env"/>
+    <!-- property name="ECLIPSE_HOME" value="../../eclipse/java-mars/eclipse/"/ -->
+    <property name="debuglevel" value="source,lines,vars"/>
+    <property name="target" value="1.7"/>
+    <property name="source" value="1.7"/>
+    <path id="ScratchAPI.classpath">
+        <pathelement location="bin"/>
+        <pathelement location="lib/commons-cli-1.2.jar"/>
+        <pathelement location="lib/commons-codec-1.9.jar"/>
+        <pathelement location="lib/commons-lang3-3.4.jar"/>
+        <pathelement location="lib/commons-logging-1.2.jar"/>
+        <pathelement location="lib/fluent-hc-4.5.1.jar"/>
+        <pathelement location="lib/httpclient-4.5.1.jar"/>
+        <pathelement location="lib/httpclient-cache-4.5.1.jar"/>
+        <pathelement location="lib/httpclient-win-4.5.1.jar"/>
+        <pathelement location="lib/httpcore-4.4.3.jar"/>
+        <pathelement location="lib/httpcore-4.4.4.jar"/>
+        <pathelement location="lib/httpcore-ab-4.4.4.jar"/>
+        <pathelement location="lib/httpcore-nio-4.4.4.jar"/>
+        <pathelement location="lib/httpmime-4.5.1.jar"/>
+        <pathelement location="lib/jna-4.1.0.jar"/>
+        <pathelement location="lib/jna-platform-4.1.0.jar"/>
+    </path>
+    <target name="init">
+        <mkdir dir="bin"/>
+        <copy includeemptydirs="false" todir="bin">
+            <fileset dir="src">
+                <exclude name="**/*.launch"/>
+                <exclude name="**/*.java"/>
+            </fileset>
+        </copy>
+    </target>
+    <target name="clean">
+        <delete dir="bin"/>
+    </target>
+    <target depends="clean" name="cleanall"/>
+    <target depends="build-subprojects,build-project" name="build"/>
+    <target name="build-subprojects"/>
+    <target depends="init" name="build-project">
+        <echo message="${ant.project.name}: ${ant.file}"/>
+        <javac debug="true" debuglevel="${debuglevel}" destdir="bin" includeantruntime="false" source="${source}" target="${target}">
+            <src path="src"/>
+            <classpath refid="ScratchAPI.classpath"/>
+        </javac>
+    </target>
+    <target description="Build all projects which reference this project. Useful to propagate changes." name="build-refprojects"/>
+    <!-- target description="copy Eclipse compiler jars to ant lib directory" name="init-eclipse-compiler">
+        <copy todir="${ant.library.dir}">
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </copy>
+        <unzip dest="${ant.library.dir}">
+            <patternset includes="jdtCompilerAdapter.jar"/>
+            <fileset dir="${ECLIPSE_HOME}/plugins" includes="org.eclipse.jdt.core_*.jar"/>
+        </unzip>
+    </target                      I don't think these need to be there-->
+    <target description="compile project with Eclipse compiler" name="build-eclipse-compiler">
+        <property name="build.compiler" value="org.eclipse.jdt.core.JDTCompilerAdapter"/>
+        <antcall target="build"/>
+    </target>
+    <target name="Main (7)">
+        <java classname="edu.mit.scratch.Main" failonerror="true" fork="yes">
+            <classpath refid="ScratchAPI.classpath"/>
+        </java>
+    </target>
+</project>
