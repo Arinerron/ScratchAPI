@@ -16,7 +16,7 @@ ScratchAPI is a simple Java interface to the Scratch 2.0 website. It is not near
 
 ------
 
-### Session Management<a name="session-management"></a>
+<a name="session-management"></a>### Session Management
 Create a user session and log in:
 ```java
 ScratchSession session = Scratch.createSession("username", "password");
@@ -44,7 +44,7 @@ session.logout();
 
 ------
 
-### Users<a name="users"></a>
+<a name="users"></a>### Users
 Create a user instance:
 ```java
 ScratchUser user = new ScratchUser("username");
@@ -85,7 +85,7 @@ TODO:
 
 ------
 
-### Projects<a name="projects"></a>
+<a name="projects"></a>### Projects
 Create a project instance:
 ```java
 ScratchProject project = new ScratchProject(projectid); // 'projectid' is an int
@@ -126,7 +126,7 @@ project.comment(session, "Example comment"); // You also can't comment too fast,
 
 ------
 
-### Cloud Data Management<a name="cloud"></a>
+<a name="cloud"></a>### Cloud Data Management
 Create a cloud session:
 ```java
 ScratchCloudSession cloudSession = session.getCloudSession(projectid);
@@ -176,7 +176,7 @@ cloudSession.close();
 
 ------
 
-### Statistics<a name="statistics"></a>
+<a name="statistics"></a>### Statistics
 Get total project count:
 ```java
 int totalProjectCount = ScratchStatistics.getProjectCount(); // Updates every 24hrs (thanks @thisandagain)
@@ -191,7 +191,7 @@ TODO:
 
 ------
 
-### Miscellaneous<a name="misc"></a>
+<a name="misc"></a>### Miscellaneous
 Get a list of Scratch users:
 ```java
 List<ScratchUser> users = Scratch.getUsers(limit, offset); // Max limit is 20
@@ -217,7 +217,7 @@ TODO:
 
 ------
 
-### Exceptions<a name="exceptions"></a>
+<a name="exceptions"></a>### Exceptions
 List of exceptions:
 ```java
 edu.mit.scratch.exceptions.ScratchException
