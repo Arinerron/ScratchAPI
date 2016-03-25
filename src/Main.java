@@ -1,4 +1,4 @@
-public class Main {
+public class Main { // C'mon, work, TravisCI!
     public static void main(String[] args) throws Exception { // This is just a test, so this shouldn't matter that I am throwing Exception
         System.out.println("This needs a main class I think, so here is a simple one.");
         
