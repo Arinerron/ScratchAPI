@@ -1,7 +1,7 @@
 # Introduction
 ScratchAPI is a simple Java interface to the Scratch 2.0 website. It is not nearly done yet, and will later include several features, but it takes time. :P
 
-[![Build Status](https://travis-ci.com/Arinerron/ScratchAPI.svg?token=xRJQhWcuhJai95gtzHzi&branch=master)](https://travis-ci.com/Arinerron/ScratchAPI)
+[![Build Status](https://travis-ci.com/Arinerron/ScratchAPI.svg?token=xRJQhWcuhJai95gtzHzi&branch=master)](https://travis-ci.com/Arinerron/ScratchAPI) [![Gitter Chat](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/Arinerron/ScratchAPI?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 
 
 # Documentation
