@@ -25,6 +25,7 @@
         <pathelement location="lib/httpmime-4.5.1.jar"/>
         <pathelement location="lib/jna-4.1.0.jar"/>
         <pathelement location="lib/jna-platform-4.1.0.jar"/>
+        <pathelement location="lib/java-json.jar"/>
     </path>
     <target name="init">
         <mkdir dir="bin"/>
@@ -63,6 +64,7 @@
                 <pathelement location="lib/httpmime-4.5.1.jar"/>
                 <pathelement location="lib/jna-4.1.0.jar"/>
                 <pathelement location="lib/jna-platform-4.1.0.jar"/>
+                <pathelement location="lib/java-json.jar"/>
             </classpath>
         </javac>
         <path id="lib">
@@ -93,9 +95,9 @@
                 <pathelement path="lib/httpcore-ab-4.4.4.jar"/>
                 <pathelement path="lib/httpcore-nio-4.4.4.jar"/>
                 <pathelement path="lib/httpmime-4.5.1.jar"/>
-                <pathelement path="lib/java-json.jar"/>
                 <pathelement path="lib/jna-4.1.0.jar"/>
                 <pathelement path="lib/jna-platform-4.1.0.jar"/>
+                <pathelement path="lib/java-json.jar"/>
             </classpath>
         </javac>
     </target>
