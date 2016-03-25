@@ -13,10 +13,10 @@
 	<classpathentry kind="lib" path="lib/httpcore-4.4.3.jar"/>
 	<classpathentry kind="lib" path="lib/httpcore-4.4.4.jar"/>
 	<classpathentry kind="lib" path="lib/httpcore-ab-4.4.4.jar"/>
-	<classpathentry kind="lib" path="lib/java-json.jar"/>
 	<classpathentry kind="lib" path="lib/httpcore-nio-4.4.4.jar"/>
 	<classpathentry kind="lib" path="lib/httpmime-4.5.1.jar"/>
 	<classpathentry kind="lib" path="lib/jna-4.1.0.jar"/>
 	<classpathentry kind="lib" path="lib/jna-platform-4.1.0.jar"/>
+	<classpathentry kind="lib" path="lib/java-json.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
