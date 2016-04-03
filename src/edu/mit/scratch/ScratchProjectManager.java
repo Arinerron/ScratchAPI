@@ -59,8 +59,7 @@ public class ScratchProjectManager {
         this.projectID = projectID;
     }
     
-    @NotWorking
-    public void toggleCommentsEnabled() throws ScratchProjectException {
+    public void toggleCommentsEnabled() throws ScratchProjectException { //TDL
     	final RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.DEFAULT)
 				.build();
 
