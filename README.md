@@ -70,21 +70,6 @@ Comment on user profile:
 user.comment(session, "Example comment"); // You can't comment too fast, remember the delay
 ```
 
-TODO:
-```java
-/* TODO: 
- * - Get user description
- * - Get what I am working on
- * - Get location
- * - Get status (Scratcher, New Scratcher, Team Member, etc) 
- * - Get project listing
- * - Get loved project and their count, and favorite project's count
- * - Get followers and following list
- * - Get comments on user's profile in a List<ScratchComment>?
- * - Get user manager as a ScratchUserManager?
- */
-```
-
 ------
 
 ### Projects<a name="projects"></a>
@@ -184,37 +169,12 @@ Get total project count:
 int totalProjectCount = ScratchStatistics.getProjectCount(); // Updates every 24hrs (thanks @thisandagain)
 ```
 
-TODO:
-```java
-/* TODO:
- * - Like everything... :P
- */
-```
-
 ------
 
 ### Miscellaneous<a name="misc"></a>
 Get a list of Scratch users:
 ```java
 List<ScratchUser> users = Scratch.getUsers(limit, offset); // Max limit is 20
-```
-
-TODO:
-```java
-/* TODO:
- * - Get list of featured projects
- * - Get list of newest projects
- * - Get list of curated projects
- * - Get list of team members (?)
- * - Get list of top-remixed projects
- * - Get list of top-loved projects
- * - Get list of featured studios
- * - Get current project curator
- * - Get Scratch design studio
- * - Get list of projects by following
- * - Get list of projects by following's loved projects
- * - Get list of projects in studios I'm following
- */
 ```
 
 ------
@@ -231,9 +191,10 @@ edu.mit.scratch.exceptions.ScratchStatisticalException
 
 
 # Examples
-### Follow yourself
+### Follow yourself and kaj
 ```java
-new ScratchUser(session.getUsername()).setFollowing(session, true);
+new ScratchUser(session.getUsername()).setFollowing(session, true); // Yourself
+new ScratchUser("kaj").setFollowing(session, true); // Kaj
 ```
 
 ------
@@ -262,7 +223,7 @@ timer.schedule(new TimerTask() {
 			e.printStackTrace();
 		}
 	}
-}, 0, 5000);
+}, 0, 5 * 1000); // Updates every 5 seconds
 ```
 
 **Warning:** if you are famous, the number of dialogs from your messages will seriously get annoying.
