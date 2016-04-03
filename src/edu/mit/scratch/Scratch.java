@@ -160,7 +160,6 @@ public class Scratch {
       }
    }
    
-   @NotWorking
    public static ScratchSession register(String username, String password, String gender, int birthMonth, String birthYear, String country, String email) throws ScratchUserException {
       // Long if statement to verify all fields are valid
       if(username.length() < 3 || username.length() > 20|| password.length() < 6 || gender.length() < 2 || birthMonth < 1 || birthMonth > 12 || birthYear.length() != 4 || country.length() == 0 || email.length() < 5) {
