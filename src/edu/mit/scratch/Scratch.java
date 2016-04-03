@@ -76,8 +76,8 @@ public class Scratch {
          + " AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.111 Safari/" + "537.36";
    public static final char CLOUD = '\u9729';
    
-    public static String CLOUD_SERVER = "cloud.scratch.mit.edu";
-    public static int CLOUD_PORT = 531;
+   public static String CLOUD_SERVER = "cloud.scratch.mit.edu";
+   public static int CLOUD_PORT = 531;
 
    public static ScratchSession createSession(final String username, String password) throws ScratchLoginException {
       try {
