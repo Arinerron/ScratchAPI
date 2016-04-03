@@ -99,7 +99,7 @@ public class ScratchProjectManager {
 				.addHeader("X-CSRFToken", session.getCSRFToken()).build();
 		try {
 			resp = httpClient.execute(update);
-			System.out.println("stats:" + resp.getStatusLine().getStatusCode());
+			System.out.println("current status:" + resp.getStatusLine().getStatusCode());
 			if(resp.getStatusLine().getStatusCode() != 200)
 				throw new ScratchProjectException();
 			final BufferedReader rd = new BufferedReader(new InputStreamReader(resp.getEntity().getContent()));
