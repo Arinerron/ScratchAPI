@@ -138,7 +138,7 @@ String contents = cloudSession.get(Scratch.CLOUD + " variable"); // The space is
 
 Set a cloud variable's contents **(not working)**:
 ```java
-cloudSession.set(Scratch.CLOUD + " variable", "new value");
+cloudSession.set(Scratch.CLOUD + " variable", "new value"); // Strings should work...
 ```
 
 Rename a cloud variable **(untested)**:
