@@ -113,13 +113,13 @@ public class ScratchCloudSession {
     public void close() {
     	try {
 			this.socket.close();
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			e.printStackTrace();
 		}
     	this.out.close();
     	try {
 			this.in.close();
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			e.printStackTrace();
 		}
     }
