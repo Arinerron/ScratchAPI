@@ -185,10 +185,10 @@ public class ScratchCloudSession {
             object.put(key, (isInteger(val) ? Integer.parseInt(val) : val)); // later remove isInteger, replace with `val`
         }
         
-        final byte ptext[] = (object.toString() + "\r\n").getBytes(StandardCharsets.ISO_8859_1);
-        final String readyRequest = new String(ptext, StandardCharsets.UTF_8);
+        final byte ptext[] = (object.toString() + "\r\n").getBytes(StandardCharsets.UTF_8); // that's an odd encoding... Change to `StandardCharsets.ISO_8859_1` if !work
+        final String readyRequest = new String(ptext, StandardCharsets.UTF_8); // charsets should match
         
-        this.out.println(readyRequest); // print if !work
+        this.out.print(readyRequest); // println if !work
         this.out.flush();
     }
     
