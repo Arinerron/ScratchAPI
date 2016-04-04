@@ -77,7 +77,7 @@ public class ScratchCloudSession {
         this.session = session;
         this.cloudToken = cloudToken; // if !work, md5 cloudToken
         this.projectID = projectID;
-        this.hashToken = this.MD5(this.getScratchSession().getSessionID());
+        this.hashToken = this.MD5(this.getCloudToken());
         
         Socket socket = null;
         PrintWriter out = null;
@@ -92,20 +92,21 @@ public class ScratchCloudSession {
             this.out = out;
             this.in = in;
             
-            /*
-             * Thread t = new Thread(new Runnable() {public void run()
-             * {while(true) {
-             * String line = "";
-             * try {
-             * line = ScratchCloudSession.this.in.readLine();
-             * } catch (IOException e) {
-             * e.printStackTrace();
-             * }
-             * System.out.println("cloud-ln:" + line);
-             * 
-             * }}});
-             * t.start();
-             */
+            final Thread t = new Thread(() -> {
+                for(;;) {
+                    String line = "";
+                    try {
+                        line = ScratchCloudSession.this.in.readLine();
+                    } catch (final IOException e) {
+                        e.printStackTrace();
+                    }
+                    if(line != null)
+                        if(!line.equals("null") && !line.equals("{}"))
+                            System.out.println("cloud-ln:" + line);
+                    
+                }
+            });
+            t.start();
             
             this.handshake();
         } catch (final Exception e) {
@@ -167,6 +168,8 @@ public class ScratchCloudSession {
     }
     
     private void request(final String method, final String[] options) {
+        this.hashToken = this.MD5(this.hashToken);
+        
         final JSONObject object = new JSONObject();
         object.put("token", this.getCloudToken());
         object.put("token2", this.hashToken);
@@ -179,24 +182,30 @@ public class ScratchCloudSession {
             final String key = option.substring(0, index - 1);
             final String val = option.substring(index);
             
-            object.put(key, val);
+            object.put(key, (isInteger(val) ? Integer.parseInt(val) : val)); // later remove isInteger, replace with `val`
         }
         
         final byte ptext[] = (object.toString() + "\r\n").getBytes(StandardCharsets.ISO_8859_1);
         final String readyRequest = new String(ptext, StandardCharsets.UTF_8);
         
-        this.out.print(readyRequest); // println if !work
+        this.out.println(readyRequest); // print if !work
         this.out.flush();
-        
-        String line = "";
-        try {
-            line = ScratchCloudSession.this.in.readLine();
-        } catch (IOException e) {
-            e.printStackTrace();
+    }
+    
+    public static boolean isInteger(String s) {
+        return isInteger(s,10);
+    }
+
+    public static boolean isInteger(String s, int radix) {
+        if(s.isEmpty()) return false;
+        for(int i = 0; i < s.length(); i++) {
+            if(i == 0 && s.charAt(i) == '-') {
+                if(s.length() == 1) return false;
+                else continue;
+            }
+            if(Character.digit(s.charAt(i),radix) < 0) return false;
         }
-        System.out.println("cloud-ln:" + line);
-        
-        this.hashToken = this.MD5(this.hashToken);
+        return true;
     }
     
     private String concat(final String first, final String second) {
