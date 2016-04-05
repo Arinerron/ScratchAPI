@@ -230,7 +230,7 @@ new ScratchUser("kaj").setFollowing(session, true); // Kaj
 
 ### Open alert dialog when you get a message
 ```java
-final String user = "griffpatch"; // Change this to your username
+final String user = "griffpatch"; // Change this to your username!
 		
 Timer timer = new Timer();
 timer.schedule(new TimerTask() {
