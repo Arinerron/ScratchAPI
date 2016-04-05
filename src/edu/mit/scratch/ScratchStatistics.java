@@ -37,6 +37,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.util.Date;
 
 import org.apache.http.client.CookieStore;
 import org.apache.http.client.config.CookieSpecs;
@@ -54,25 +55,44 @@ import edu.mit.scratch.exceptions.ScratchStatisticalException;
 
 public class ScratchStatistics {
     public static int getProjectCount() throws ScratchStatisticalException {
+        return ScratchStatistics.getStatisticsJSONObject().getInt("PROJECT_COUNT");
+    }
+    
+    public static int getStudioCount() throws ScratchStatisticalException {
+        return ScratchStatistics.getStatisticsJSONObject().getInt("STUDIO_COUNT");
+    }
+    
+    public static int getUserCount() throws ScratchStatisticalException {
+        return ScratchStatistics.getStatisticsJSONObject().getInt("USER_COUNT");
+    }
+    
+    public static int getCommentCount() throws ScratchStatisticalException {
+        return ScratchStatistics.getStatisticsJSONObject().getInt("COMMENT_COUNT");
+    }
+    
+    public static Date getTimestamp() throws ScratchStatisticalException {
+        return new Date((long) ScratchStatistics.getStatisticsJSONObject().getDouble("_TS") * 1000);
+    }
+    
+    protected static JSONObject getStatisticsJSONObject() throws ScratchStatisticalException {
         try {
-            final RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY)
-                    .build();
+            final RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.DEFAULT).build();
             
             final CookieStore cookieStore = new BasicCookieStore();
             final BasicClientCookie lang = new BasicClientCookie("scratchlanguage", "en");
             final BasicClientCookie debug = new BasicClientCookie("DEBUG", "true");
             debug.setDomain(".scratch.mit.edu");
             debug.setPath("/");
-            lang.setPath("/");
             lang.setDomain(".scratch.mit.edu");
-            cookieStore.addCookie(lang);
+            lang.setPath("/");
             cookieStore.addCookie(debug);
+            cookieStore.addCookie(lang);
             
             final CloseableHttpClient httpClient = HttpClients.custom().setDefaultRequestConfig(globalConfig)
                     .setUserAgent(Scratch.USER_AGENT).setDefaultCookieStore(cookieStore).build();
             CloseableHttpResponse resp;
             
-            final HttpUriRequest update = RequestBuilder.get().setUri("https://api.scratch.mit.edu/projects/count/all")
+            final HttpUriRequest update = RequestBuilder.get().setUri("https://scratch.mit.edu/statistics/data/daily/")
                     .addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8")
                     .addHeader("Referer", "https://scratch.mit.edu").addHeader("Origin", "https://scratch.mit.edu")
                     .addHeader("Accept-Encoding", "gzip, deflate, sdch").addHeader("Accept-Language", "en-US,en;q=0.8")
@@ -97,10 +117,7 @@ public class ScratchStatistics {
             String line = "";
             while ((line = rd.readLine()) != null)
                 result.append(line);
-            final JSONObject jsonOBJ = new JSONObject(result.toString().trim());
-            
-            final int preCount = (Integer) jsonOBJ.get("count");
-            return preCount;
+            return new JSONObject(result.toString().trim());
         } catch (final UnsupportedEncodingException e) {
             e.printStackTrace();
             throw new ScratchStatisticalException();
