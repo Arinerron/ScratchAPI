@@ -37,7 +37,10 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -53,6 +56,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.impl.cookie.BasicClientCookie;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import edu.mit.scratch.exceptions.ScratchProjectException;
@@ -60,6 +64,11 @@ import edu.mit.scratch.exceptions.ScratchUserException;
 
 public class ScratchUser {
     private String username = null;
+    private int user_id = 0;
+    private Date join_date = null;
+    private String status = "";
+    private String bio = "";
+    private String country = "";
     
     public ScratchUser(final String username) {
         this.username = username;
@@ -69,10 +78,29 @@ public class ScratchUser {
         return this.username;
     }
     
+    public int getUserID() {
+        return this.user_id;
+    }
+    
+    public Date getJoinDate() {
+        return this.join_date;
+    }
+    
+    public String getStatus() {
+        return this.status;
+    }
+    
+    public String getBio() {
+        return this.bio;
+    }
+    
+    public String getCountry() {
+        return this.country; // NOT country code, just country.
+    }
+    
     public void setFollowing(final ScratchSession session, final boolean following) throws ScratchUserException {
         try {
-            final RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY)
-                    .build();
+            final RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.DEFAULT).build();
             
             final BasicCookieStore cookieStore = new BasicCookieStore();
             final BasicClientCookie lang = new BasicClientCookie("scratchlanguage", "en");
@@ -139,8 +167,7 @@ public class ScratchUser {
     }
     
     public boolean comment(final ScratchSession session, final String comment) throws ScratchProjectException {
-        final RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY)
-                .build();
+        final RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.DEFAULT).build();
         
         final CookieStore cookieStore = new BasicCookieStore();
         final BasicClientCookie lang = new BasicClientCookie("scratchlanguage", "en");
@@ -199,21 +226,12 @@ public class ScratchUser {
             throw new ScratchProjectException();
         }
         
-        BufferedReader rd;
-        try {
-            rd = new BufferedReader(new InputStreamReader(resp.getEntity().getContent()));
-        } catch (UnsupportedOperationException | IOException e) {
-            e.printStackTrace();
-            throw new ScratchProjectException();
-        }
-        
         return false;
     }
     
     public int getMessageCount() throws ScratchUserException {
         try {
-            final RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY)
-                    .build();
+            final RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.DEFAULT).build();
             
             final CookieStore cookieStore = new BasicCookieStore();
             final BasicClientCookie lang = new BasicClientCookie("scratchlanguage", "en");
@@ -267,7 +285,73 @@ public class ScratchUser {
         }
     }
     
-    public ScratchUser update() {
+    public ScratchUser update() throws ScratchUserException {
+        try {
+            final RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.DEFAULT).build();
+            
+            final CookieStore cookieStore = new BasicCookieStore();
+            final BasicClientCookie lang = new BasicClientCookie("scratchlanguage", "en");
+            final BasicClientCookie debug = new BasicClientCookie("DEBUG", "true");
+            lang.setDomain(".scratch.mit.edu");
+            lang.setPath("/");
+            debug.setDomain(".scratch.mit.edu");
+            debug.setPath("/");
+            cookieStore.addCookie(lang);
+            cookieStore.addCookie(debug);
+            
+            final CloseableHttpClient httpClient = HttpClients.custom().setDefaultRequestConfig(globalConfig)
+                    .setUserAgent(Scratch.USER_AGENT).setDefaultCookieStore(cookieStore).build();
+            CloseableHttpResponse resp;
+            
+            final HttpUriRequest update = RequestBuilder.get().setUri("https://api.scratch.mit.edu/users/arinerron")
+                    .addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8")
+                    .addHeader("Referer", "https://scratch.mit.edu/users/arinerron")
+                    .addHeader("Origin", "https://scratch.mit.edu").addHeader("Accept-Encoding", "gzip, deflate, sdch")
+                    .addHeader("Accept-Language", "en-US,en;q=0.8").addHeader("Content-Type", "application/json")
+                    .addHeader("X-Requested-With", "XMLHttpRequest").build();
+            try {
+                resp = httpClient.execute(update);
+            } catch (final IOException e) {
+                e.printStackTrace();
+                throw new ScratchUserException();
+            }
+            
+            BufferedReader rd;
+            try {
+                rd = new BufferedReader(new InputStreamReader(resp.getEntity().getContent()));
+            } catch (UnsupportedOperationException | IOException e) {
+                e.printStackTrace();
+                throw new ScratchUserException();
+            }
+            
+            final StringBuffer result = new StringBuffer();
+            String line = "";
+            while ((line = rd.readLine()) != null)
+                result.append(line);
+            System.out.println("msgdata:" + result.toString()); // remove later!
+            final JSONObject jsonObject = new JSONObject(result.toString().trim());
+            
+            this.join_date = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss")
+                    .parse(jsonObject.getJSONObject("history").getString("joined"));
+            final JSONObject profile = jsonObject.getJSONObject("profile");
+            this.user_id = profile.getInt("id");
+            this.status = profile.getString("status");
+            this.bio = profile.getString("bio");
+            this.country = profile.getString("country");
+        } catch (final UnsupportedEncodingException e) {
+            e.printStackTrace();
+            throw new ScratchUserException();
+        } catch (final IOException e) {
+            e.printStackTrace();
+            throw new ScratchUserException();
+        } catch (final JSONException e) {
+            e.printStackTrace();
+            throw new ScratchUserException();
+        } catch (final ParseException e) {
+            e.printStackTrace();
+            throw new ScratchUserException();
+        }
+        
         return this;
     }
     
@@ -276,8 +360,7 @@ public class ScratchUser {
         final List<ScratchProject> ids = new ArrayList<>();
         
         try {
-            final RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY)
-                    .build();
+            final RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.DEFAULT).build();
             
             final CookieStore cookieStore = new BasicCookieStore();
             final BasicClientCookie lang = new BasicClientCookie("scratchlanguage", "en");
@@ -350,8 +433,7 @@ public class ScratchUser {
         final List<ScratchProject> ids = new ArrayList<>();
         
         try {
-            final RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY)
-                    .build();
+            final RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.DEFAULT).build();
             
             final CookieStore cookieStore = new BasicCookieStore();
             final BasicClientCookie lang = new BasicClientCookie("scratchlanguage", "en");
@@ -364,9 +446,7 @@ public class ScratchUser {
             cookieStore.addCookie(debug);
             
             final CloseableHttpClient httpClient = HttpClients.custom().setDefaultRequestConfig(globalConfig)
-                    .setUserAgent("Mozilla/5.0 (Windows NT 6.1; WOW64)"
-                            + " AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.111 Safari/" + "537.36")
-                    .setDefaultCookieStore(cookieStore).build();
+                    .setUserAgent(Scratch.USER_AGENT).setDefaultCookieStore(cookieStore).build();
             CloseableHttpResponse resp;
             
             final HttpUriRequest update = RequestBuilder.get()

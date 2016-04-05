@@ -3,7 +3,7 @@ ScratchAPI is a simple Java interface to the Scratch 2.0 website. It is not near
 
 [![Build Status](https://travis-ci.com/Arinerron/ScratchAPI.svg?token=xRJQhWcuhJai95gtzHzi&branch=master)](https://travis-ci.com/Arinerron/ScratchAPI) [![Gitter](https://badges.gitter.im/Arinerron/ScratchAPI.svg)](https://gitter.im/Arinerron/ScratchAPI?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
-If you want to see a list of in-progress features, click here > https://github.com/Arinerron/ScratchAPI/issues/1
+If you want to see a list of features to be added, click here > https://github.com/Arinerron/ScratchAPI/issues/1
 Also, if you're wondering why everything is indented with 8-width tabs, it's because GitHub is being irritating. They are supposed to be 4 spaces.
 
 
@@ -55,7 +55,12 @@ ScratchUser user = new ScratchUser("username");
 
 Get information about user:
 ```java
+user.update(); // Run this first! It updates the info about the user.
 String username = user.getUsername();
+String status = user.getStatus();
+String bio = user.getBio();
+String country = user.getCountry();
+Date joinDate = user.getJoinDate();
 int messageCount = user.getMessageCount();
 List<ScratchProject> favoriteProjects = user.getFavoriteProjects(limit, offset); // limit max 20
 ```

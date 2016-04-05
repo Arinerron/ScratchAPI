@@ -36,7 +36,6 @@ package edu.mit.scratch;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.UnsupportedEncodingException;
 import java.util.Iterator;
 
 import org.apache.http.client.CookieStore;
@@ -66,8 +65,7 @@ public class ScratchUserManager {
     
     public void clearMessages() throws ScratchUserException {
         try {
-            final RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY)
-                    .build();
+            final RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.DEFAULT).build();
             
             final CookieStore cookieStore = new BasicCookieStore();
             final BasicClientCookie lang = new BasicClientCookie("scratchlanguage", "en");
@@ -76,11 +74,7 @@ public class ScratchUserManager {
             cookieStore.addCookie(lang);
             
             final CloseableHttpClient httpClient = HttpClients.custom().setDefaultRequestConfig(globalConfig)
-                    .setUserAgent("Mozilla/5.0 (Windows NT 6.1; WOW64)"
-                            + " AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.111 Safari/" + "537.36")
-                    .setDefaultCookieStore(cookieStore).build();
-            CloseableHttpResponse resp;
-            
+                    .setUserAgent(Scratch.USER_AGENT).setDefaultCookieStore(cookieStore).build();
             final HttpUriRequest update = RequestBuilder.get()
                     .setUri("https://scratch.mit.edu/messages/ajax/messages-clear/")
                     .addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8")
@@ -91,12 +85,8 @@ public class ScratchUserManager {
                             "scratchsessionsid=" + this.session.getSessionID() + "; scratchcsrftoken="
                                     + this.session.getCSRFToken())
                     .addHeader("X-CSRFToken", this.session.getCSRFToken()).build();
-            try {
-                resp = httpClient.execute(update);
-            } catch (final IOException e) {
-                e.printStackTrace();
-                throw new ScratchUserException();
-            }
+            
+            httpClient.execute(update);
         } catch (final Exception e) {
             throw new ScratchUserException();
         }
@@ -106,14 +96,14 @@ public class ScratchUserManager {
         try {
             this.update();
         } catch (final ScratchUserException e) {
+            e.printStackTrace();
         }
         return this.message_count;
     }
     
     public ScratchUserManager update() throws ScratchUserException {
         try {
-            final RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.BROWSER_COMPATIBILITY)
-                    .build();
+            final RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.DEFAULT).build();
             
             final CookieStore cookieStore = new BasicCookieStore();
             final BasicClientCookie lang = new BasicClientCookie("scratchlanguage", "en");
@@ -131,11 +121,10 @@ public class ScratchUserManager {
             cookieStore.addCookie(lang);
             cookieStore.addCookie(sessid);
             cookieStore.addCookie(token);
+            cookieStore.addCookie(debug);
             
             final CloseableHttpClient httpClient = HttpClients.custom().setDefaultRequestConfig(globalConfig)
-                    .setUserAgent("Mozilla/5.0 (Windows NT 6.1; WOW64)"
-                            + " AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.111 Safari/" + "537.36")
-                    .setDefaultCookieStore(cookieStore).build();
+                    .setUserAgent(Scratch.USER_AGENT).setDefaultCookieStore(cookieStore).build();
             CloseableHttpResponse resp;
             
             final HttpUriRequest update = RequestBuilder.get()
@@ -167,7 +156,7 @@ public class ScratchUserManager {
             String line = "";
             while ((line = rd.readLine()) != null)
                 result.append(line);
-            System.out.println("msgdata:" + result.toString());
+            
             final JSONObject jsonOBJ = new JSONObject(result.toString().trim());
             
             final Iterator<?> keys = jsonOBJ.keys();
@@ -186,10 +175,7 @@ public class ScratchUserManager {
                         break;
                 }
             }
-        } catch (final UnsupportedEncodingException e) {
-            e.printStackTrace();
-            throw new ScratchUserException();
-        } catch (final IOException e) {
+        } catch (final Exception e) {
             e.printStackTrace();
             throw new ScratchUserException();
         }
