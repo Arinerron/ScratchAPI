@@ -153,7 +153,7 @@ public class ScratchCloudSession {
             
             for (final ScratchCloudListener listener : this.listeners)
                 listener.onSet(projectID, name, value);
-        } else {
+        } else { // TODO: Add `end`.
             System.out.println("Unknown method: " + method + "\nfor line: " + line);
         }
     }
@@ -214,9 +214,8 @@ public class ScratchCloudSession {
         }//
         
         final byte ptext[] = (object.toString() + "\r\n").getBytes(StandardCharsets.UTF_8); // that's an odd encoding... Change to `StandardCharsets.ISO_8859_1` if !work
-        final String readyRequest = new String(ptext, StandardCharsets.UTF_8); // charsets should match
+        final String readyRequest = new String(ptext, StandardCharsets.UTF_8);
         
-        System.out.println(readyRequest);
         this.out.print(readyRequest); // println if !work
         this.out.flush();
     }

@@ -144,6 +144,11 @@ ScratchSession session = cloudSession.getScratchSession();
 String cloudToken = cloudSession.getCloudToken();
 ```
 
+Get a list of cloud variables:
+```java
+List<String> variables = cloudSession.getVariables();
+```
+
 Get a cloud variable's contents:
 ```java
 String contents = cloudSession.get(Scratch.CLOUD + " variable"); // The space is needed!
@@ -156,7 +161,7 @@ cloudSession.set(Scratch.CLOUD + " variable", "new value"); // Strings should wo
 
 Rename a cloud variable **(untested)**:
 ```java
-cloudSession.rename(Scratch.CLOUD + " variable", Scratch.CLOUD + " newName");
+cloudSession.rename(Scratch.CLOUD + " variable", Scratch.CLOUD + " new name");
 ```
 
 Create a cloud variable **(untested)**:
