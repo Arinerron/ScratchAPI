@@ -120,6 +120,18 @@ Create a cloud session:
 ScratchCloudSession cloudSession = session.getCloudSession(projectid);
 ```
 
+Add and remove a cloud event listener:
+```java
+ScratchCloudListener listener = new ScratchCloudListener() {
+    public void onSet(int projectID, String name, String value) {
+        // insert code here...	
+    }
+}
+
+cloudSession.addCloudListener(listener); // add
+cloudSession.removeCloudListener(listener); // remove
+```
+
 Get the cloud symbol (☁):
 ```java
 char cloudSymbol = Scratch.CLOUD;
@@ -167,7 +179,13 @@ cloudSession.close();
 ### Statistics<a name="statistics"></a>
 Get total project count:
 ```java
-int totalProjectCount = ScratchStatistics.getProjectCount(); // Updates every 24hrs (thanks @thisandagain)
+ // Updates every 24hrs (thanks @thisandagain)
+ 
+int totalProjectCount = ScratchStatistics.getProjectCount();
+int totalStudioCount = ScratchStatistics.getStudioCount();
+int totalUserCount = ScratchStatistics.getUserCount();
+int totalCommentCount = ScratchStatistics.getCommentCount();
+Date timestamp = ScratchStatistics.getTimestamp(); 
 ```
 
 ------
