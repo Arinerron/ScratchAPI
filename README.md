@@ -131,6 +131,8 @@ ScratchCloudListener listener = new ScratchCloudListener() {
     public void onSet(int projectID, String name, String value) {
         // insert code here...	
     }
+    
+    // Later TODO add onEnd
 }
 
 cloudSession.addCloudListener(listener); // add
