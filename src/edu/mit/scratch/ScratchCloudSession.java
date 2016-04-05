@@ -67,10 +67,13 @@ public class ScratchCloudSession {
     private String cloudToken = null;
     private String hashToken = null;
     private int projectID = 0;
+    private boolean running = true;
+    private final List<ScratchCloudListener> listeners = new ArrayList<>();
     
     private PrintWriter out = null;
     private Socket socket = null;
     private BufferedReader in = null;
+    private Thread thread = null;
     
     public ScratchCloudSession(final ScratchSession session, final String cloudToken, final int projectID)
             throws ScratchProjectException {
@@ -92,21 +95,21 @@ public class ScratchCloudSession {
             this.out = out;
             this.in = in;
             
-            final Thread t = new Thread(() -> {
-                for(;;) {
+            this.thread = new Thread(() -> {
+                while (ScratchCloudSession.this.running) {
                     String line = "";
                     try {
                         line = ScratchCloudSession.this.in.readLine();
                     } catch (final IOException e) {
                         e.printStackTrace();
                     }
-                    if(line != null)
-                        if(!line.equals("null") && !line.equals("{}"))
-                            System.out.println("cloud-ln:" + line);
+                    if (line != null)
+                        if (!line.equals("null") && !line.equals("{}"))
+                            ScratchCloudSession.this.handleLine(line);
                     
                 }
             });
-            t.start();
+            this.thread.start();
             
             this.handshake();
         } catch (final Exception e) {
@@ -116,8 +119,17 @@ public class ScratchCloudSession {
         
     }
     
+    public void addCloudListener(final ScratchCloudListener listener) {
+        this.listeners.add(listener);
+    }
+    
+    public boolean removeCloudListener(final ScratchCloudListener listener) {
+        return this.listeners.remove(listener);
+    }
+    
     public void close() {
         try {
+            this.running = false;
             this.socket.close();
         } catch (final IOException e) {
             e.printStackTrace();
@@ -127,6 +139,22 @@ public class ScratchCloudSession {
             this.in.close();
         } catch (final IOException e) {
             e.printStackTrace();
+        }
+    }
+    
+    public void handleLine(final String line) {
+        final JSONObject object = new JSONObject(line);
+        
+        final String method = object.getString("method");
+        if ("set".equals(method)) { // inverted the .equals to prevent NullPointerExceptions
+            final int projectID = object.getInt("project_id");
+            final String name = object.getString("name");
+            final String value = object.getString("value");
+            
+            for (final ScratchCloudListener listener : this.listeners)
+                listener.onSet(projectID, name, value);
+        } else {
+            System.out.println("Unknown method: " + method + "\nfor line: " + line);
         }
     }
     
@@ -182,7 +210,7 @@ public class ScratchCloudSession {
             final String key = option.substring(0, index - 1);
             final String val = option.substring(index);
             
-            object.put(key, (isInteger(val) ? Integer.parseInt(val) : val)); // later remove isInteger, replace with `val`
+            object.put(key, (ScratchCloudSession.isInteger(val) ? Integer.parseInt(val) : val)); // later remove isInteger, replace with `val`
         }
         
         final byte ptext[] = (object.toString() + "\r\n").getBytes(StandardCharsets.UTF_8); // that's an odd encoding... Change to `StandardCharsets.ISO_8859_1` if !work
@@ -192,18 +220,22 @@ public class ScratchCloudSession {
         this.out.flush();
     }
     
-    public static boolean isInteger(String s) {
-        return isInteger(s,10);
+    public static boolean isInteger(final String s) {
+        return ScratchCloudSession.isInteger(s, 10);
     }
-
-    public static boolean isInteger(String s, int radix) {
-        if(s.isEmpty()) return false;
-        for(int i = 0; i < s.length(); i++) {
-            if(i == 0 && s.charAt(i) == '-') {
-                if(s.length() == 1) return false;
-                else continue;
+    
+    public static boolean isInteger(final String s, final int radix) {
+        if (s.isEmpty())
+            return false;
+        for (int i = 0; i < s.length(); i++) {
+            if ((i == 0) && (s.charAt(i) == '-')) {
+                if (s.length() == 1)
+                    return false;
+                else
+                    continue;
             }
-            if(Character.digit(s.charAt(i),radix) < 0) return false;
+            if (Character.digit(s.charAt(i), radix) < 0)
+                return false;
         }
         return true;
     }
