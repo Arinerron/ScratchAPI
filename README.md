@@ -4,7 +4,7 @@ ScratchAPI is a simple Java interface to the Scratch 2.0 website. It is not near
 [![Build Status](https://travis-ci.com/Arinerron/ScratchAPI.svg?token=xRJQhWcuhJai95gtzHzi&branch=master)](https://travis-ci.com/Arinerron/ScratchAPI) [![Gitter](https://badges.gitter.im/Arinerron/ScratchAPI.svg)](https://gitter.im/Arinerron/ScratchAPI?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge)
 
 If you want to see a list of in-progress features, click here > https://github.com/Arinerron/ScratchAPI/issues/1
-Also, if you're wondering why everything is indented with 8-width tabs, it's because GitHub is being irratating. They are supposed to be 4 spaces.
+Also, if you're wondering why everything is indented with 8-width tabs, it's because GitHub is being irritating. They are supposed to be 4 spaces.
 
 
 # Documentation
@@ -149,7 +149,7 @@ Get a cloud variable's contents:
 String contents = cloudSession.get(Scratch.CLOUD + " variable"); // The space is needed!
 ```
 
-Set a cloud variable's contents **(not working)**:
+Set a cloud variable's contents:
 ```java
 cloudSession.set(Scratch.CLOUD + " variable", "new value"); // Strings should work...
 ```
