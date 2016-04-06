@@ -2,21 +2,21 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER/org.eclipse.jdt.internal.debug.ui.launcher.StandardVMType/JavaSE-1.8"/>
-	<classpathentry kind="lib" path="/home/aaron/EclipseWorkspace/ScratchAPI/lib/commons-cli-1.2.jar"/>
-	<classpathentry kind="lib" path="/home/aaron/EclipseWorkspace/ScratchAPI/lib/commons-codec-1.9.jar"/>
-	<classpathentry kind="lib" path="/home/aaron/EclipseWorkspace/ScratchAPI/lib/commons-lang3-3.4.jar"/>
-	<classpathentry kind="lib" path="/home/aaron/EclipseWorkspace/ScratchAPI/lib/commons-logging-1.2.jar"/>
-	<classpathentry kind="lib" path="/home/aaron/EclipseWorkspace/ScratchAPI/lib/fluent-hc-4.5.1.jar"/>
-	<classpathentry kind="lib" path="/home/aaron/EclipseWorkspace/ScratchAPI/lib/httpclient-4.5.1.jar"/>
-	<classpathentry kind="lib" path="/home/aaron/EclipseWorkspace/ScratchAPI/lib/httpclient-cache-4.5.1.jar"/>
-	<classpathentry kind="lib" path="/home/aaron/EclipseWorkspace/ScratchAPI/lib/httpclient-win-4.5.1.jar"/>
-	<classpathentry kind="lib" path="/home/aaron/EclipseWorkspace/ScratchAPI/lib/httpcore-4.4.3.jar"/>
-	<classpathentry kind="lib" path="/home/aaron/EclipseWorkspace/ScratchAPI/lib/httpcore-4.4.4.jar"/>
-	<classpathentry kind="lib" path="/home/aaron/EclipseWorkspace/ScratchAPI/lib/httpcore-ab-4.4.4.jar"/>
-	<classpathentry kind="lib" path="/home/aaron/EclipseWorkspace/ScratchAPI/lib/httpcore-nio-4.4.4.jar"/>
-	<classpathentry kind="lib" path="/home/aaron/EclipseWorkspace/ScratchAPI/lib/httpmime-4.5.1.jar"/>
-	<classpathentry kind="lib" path="/home/aaron/EclipseWorkspace/ScratchAPI/lib/java-json.jar"/>
-	<classpathentry kind="lib" path="/home/aaron/EclipseWorkspace/ScratchAPI/lib/jna-4.1.0.jar"/>
-	<classpathentry kind="lib" path="/home/aaron/EclipseWorkspace/ScratchAPI/lib/jna-platform-4.1.0.jar"/>
+	<classpathentry kind="lib" path="lib/commons-cli-1.2.jar"/>
+	<classpathentry kind="lib" path="lib/commons-codec-1.9.jar"/>
+	<classpathentry kind="lib" path="lib/commons-lang3-3.4.jar"/>
+	<classpathentry kind="lib" path="lib/commons-logging-1.2.jar"/>
+	<classpathentry kind="lib" path="lib/fluent-hc-4.5.1.jar"/>
+	<classpathentry kind="lib" path="lib/httpclient-4.5.1.jar"/>
+	<classpathentry kind="lib" path="lib/httpclient-cache-4.5.1.jar"/>
+	<classpathentry kind="lib" path="lib/httpclient-win-4.5.1.jar"/>
+	<classpathentry kind="lib" path="lib/httpcore-4.4.3.jar"/>
+	<classpathentry kind="lib" path="lib/httpcore-4.4.4.jar"/>
+	<classpathentry kind="lib" path="lib/httpcore-ab-4.4.4.jar"/>
+	<classpathentry kind="lib" path="lib/httpcore-nio-4.4.4.jar"/>
+	<classpathentry kind="lib" path="lib/httpmime-4.5.1.jar"/>
+	<classpathentry kind="lib" path="lib/java-json.jar"/>
+	<classpathentry kind="lib" path="lib/jna-4.1.0.jar"/>
+	<classpathentry kind="lib" path="lib/jna-platform-4.1.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
