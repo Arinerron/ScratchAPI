@@ -64,7 +64,7 @@ import edu.mit.scratch.exceptions.ScratchLoginException;
 import edu.mit.scratch.exceptions.ScratchUserException;
 
 public class Scratch {
-    public static final String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64)"
+    protected static String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64)"
             + " AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.111 Safari/" + "537.36";
     public static final char CLOUD = '☁';
     
@@ -151,7 +151,6 @@ public class Scratch {
         }
     }
     
-    @NotWorking
     public static ScratchSession register(final String username, final String password, final String gender,
             final int birthMonth, final String birthYear, final String country, final String email)
             throws ScratchUserException {
@@ -307,6 +306,11 @@ public class Scratch {
             str.append(new String(b, 0, len));
         in.close();
         return str.toString();
+    }
+    
+    public static String setUserAgent(final String user_agent) {
+        Scratch.USER_AGENT = user_agent;
+        return Scratch.USER_AGENT;
     }
     
     public static List<ScratchUser> getUsers(final int limit, final int offset) throws ScratchUserException {
