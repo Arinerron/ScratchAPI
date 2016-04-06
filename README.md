@@ -203,6 +203,11 @@ Date timestamp = ScratchStatistics.getTimestamp();
 ------
 
 ### Miscellaneous<a name="misc"></a>
+Set the default `User-Agent`:
+```java
+Scratch.setUserAgent("insert User-Agent here");
+```
+
 Get a list of Scratch users:
 ```java
 List<ScratchUser> users = Scratch.getUsers(limit, offset); // Max limit is 20
