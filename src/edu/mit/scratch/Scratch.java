@@ -1,13 +1,13 @@
 package edu.mit.scratch;
 
 /*
- * 
+ *
  * +------+----------------+------+
  * |######|  [ScratchAPI]  |######|
  * +------+----------------+------+
- * 
+ *
  * Copyright (c) 2016 ScratchAPI Developers
- * 
+ *
  * Permission is hereby granted, free of charge, to any person
  * obtaining a copy of this software and associated documentation
  * files (the "Software"), to deal in the Software without
@@ -15,10 +15,10 @@ package edu.mit.scratch;
  * modify, merge, publish, distribute, sublicense, and/or sell copies
  * of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be
  * included in all copies or substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
  * EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES
  * OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
@@ -27,7 +27,7 @@ package edu.mit.scratch;
  * WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
  * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER
  * DEALINGS IN THE SOFTWARE.
- * 
+ *
  * "ScratchAPI Developers" means anybody who contributed code to the
  * project.
  *
@@ -41,6 +41,7 @@ import java.io.UnsupportedEncodingException;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Pattern;
 
 import org.apache.http.Header;
 import org.apache.http.client.CookieStore;
@@ -67,36 +68,36 @@ public class Scratch {
     protected static String USER_AGENT = "Mozilla/5.0 (Windows NT 6.1; WOW64)"
             + " AppleWebKit/537.36 (KHTML, like Gecko) Chrome/38.0.2125.111 Safari/" + "537.36";
     public static final char CLOUD = '☁';
-    
+
     public static String CLOUD_SERVER = "cloud.scratch.mit.edu";
     public static int CLOUD_PORT = 531;
-    
+
     public static ScratchSession createSession(final String username, String password) throws ScratchLoginException {
         try {
             final RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.DEFAULT) // Changed due to deprecation
                     .build();
-            
+
             final CookieStore cookieStore = new BasicCookieStore();
             final BasicClientCookie lang = new BasicClientCookie("scratchlanguage", "en");
             lang.setDomain(".scratch.mit.edu");
             lang.setPath("/");
             cookieStore.addCookie(lang);
-            
+
             final CloseableHttpClient httpClient = HttpClients.custom().setDefaultRequestConfig(globalConfig)
                     .setUserAgent(Scratch.USER_AGENT).setDefaultCookieStore(cookieStore).build();
             CloseableHttpResponse resp;
-            
+
             final HttpUriRequest csrf = RequestBuilder.get().setUri("https://scratch.mit.edu/csrf_token/")
                     .addHeader("Accept", "*/*").addHeader("Referer", "https://scratch.mit.edu")
                     .addHeader("X-Requested-With", "XMLHttpRequest").build();
             resp = httpClient.execute(csrf);
             resp.close();
-            
+
             String csrfToken = null;
             for (final Cookie c : cookieStore.getCookies())
                 if (c.getName().equals("scratchcsrftoken"))
                     csrfToken = c.getValue();
-            
+
             final JSONObject loginObj = new JSONObject();
             loginObj.put("username", username);
             loginObj.put("password", password);
@@ -114,7 +115,7 @@ public class Scratch {
             resp = httpClient.execute(login);
             password = null;
             final BufferedReader rd = new BufferedReader(new InputStreamReader(resp.getEntity().getContent()));
-            
+
             final StringBuffer result = new StringBuffer();
             String line = "";
             while ((line = rd.readLine()) != null)
@@ -129,28 +130,30 @@ public class Scratch {
             for (final Header header : headers)
                 if (header.getName().equals("Set-Cookie")) {
                     final String value = header.getValue();
-                    final String[] split = value.split("; ");
+                    final String[] split = value.split(Pattern.quote("; "));
                     for (final String s : split) {
-                        final String[] split2 = s.split("=");
-                        final String key = split2[0];
-                        final String val = split2[1];
-                        if (key.equals("scratchsessionsid"))
-                            ssi = val;
-                        else if (key.equals("scratchcsrftoken"))
-                            sct = val;
-                        else if (key.equals("expires"))
-                            e = val;
+                        if(s.contains("=")) {
+                            final String[] split2 = s.split(Pattern.quote("="));
+                            final String key = split2[0];
+                            final String val = split2[1];
+                            if (key.equals("scratchsessionsid"))
+                                ssi = val;
+                            else if (key.equals("scratchcsrftoken"))
+                                sct = val;
+                            else if (key.equals("expires"))
+                                e = val;
+                        }
                     }
                 }
             resp.close();
-            
+
             return new ScratchSession(ssi, sct, e, username);
         } catch (final IOException e) {
             e.printStackTrace();
             throw new ScratchLoginException();
         }
     }
-    
+
     public static ScratchSession register(final String username, final String password, final String gender,
             final int birthMonth, final String birthYear, final String country, final String email)
             throws ScratchUserException {
@@ -162,17 +165,17 @@ public class Scratch {
         } else {
             try {
                 final RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.DEFAULT).build();
-                
+
                 final CookieStore cookieStore = new BasicCookieStore();
                 final BasicClientCookie lang = new BasicClientCookie("scratchlanguage", "en");
                 lang.setDomain(".scratch.mit.edu");
                 lang.setPath("/");
                 cookieStore.addCookie(lang);
-                
+
                 CloseableHttpClient httpClient = HttpClients.custom().setDefaultRequestConfig(globalConfig)
                         .setUserAgent(Scratch.USER_AGENT).setDefaultCookieStore(cookieStore).build();
                 CloseableHttpResponse resp;
-                
+
                 final HttpUriRequest csrf = RequestBuilder.get().setUri("https://scratch.mit.edu/csrf_token/")
                         .addHeader("Accept", "*/*").addHeader("Referer", "https://scratch.mit.edu")
                         .addHeader("X-Requested-With", "XMLHttpRequest").build();
@@ -187,12 +190,12 @@ public class Scratch {
                 } catch (final IOException e) {
                     throw new ScratchUserException();
                 }
-                
+
                 String csrfToken = null;
                 for (final Cookie c : cookieStore.getCookies())
                     if (c.getName().equals("scratchcsrftoken"))
                         csrfToken = c.getValue();
-                
+
                 /*
                  * try {
                  * username = URLEncoder.encode(username, "UTF-8");
@@ -207,7 +210,7 @@ public class Scratch {
                  * e1.printStackTrace();
                  * }
                  */
-                
+
                 final BasicClientCookie csrfCookie = new BasicClientCookie("scratchcsrftoken", csrfToken);
                 csrfCookie.setDomain(".scratch.mit.edu");
                 csrfCookie.setPath("/");
@@ -216,10 +219,10 @@ public class Scratch {
                 debug.setDomain(".scratch.mit.edu");
                 debug.setPath("/");
                 cookieStore.addCookie(debug);
-                
+
                 httpClient = HttpClients.custom().setDefaultRequestConfig(globalConfig).setUserAgent(Scratch.USER_AGENT)
                         .setDefaultCookieStore(cookieStore).build();
-                
+
                 /*
                  * final String data = "username=" + username + "&password=" +
                  * password + "&birth_month=" + birthMonth + "&birth_year=" +
@@ -229,7 +232,7 @@ public class Scratch {
                  * + csrfToken;
                  * System.out.println(data);
                  */
-                
+
                 final MultipartEntityBuilder builder = MultipartEntityBuilder.create();
                 builder.addTextBody("birth_month", birthMonth + "", ContentType.TEXT_PLAIN);
                 builder.addTextBody("birth_year", birthYear, ContentType.TEXT_PLAIN);
@@ -244,7 +247,7 @@ public class Scratch {
                 builder.addTextBody("usernames_and_messages",
                         "<table class=\"banhistory\"> <thead> <tr> <td>Account</td> <td>Email</td> <td>Reason</td> <td>Date</td> </tr> </thead> </table>",
                         ContentType.TEXT_PLAIN);
-                
+
                 final HttpUriRequest createAccount = RequestBuilder.post()
                         .setUri("https://scratch.mit.edu/accounts/register_new_user/")
                         .addHeader("Accept", "application/json, text/javascript, */*; q=0.01")
@@ -259,7 +262,7 @@ public class Scratch {
                 resp = httpClient.execute(createAccount);
                 System.out.println("REGISTER:" + resp.getStatusLine());
                 final BufferedReader rd = new BufferedReader(new InputStreamReader(resp.getEntity().getContent()));
-                
+
                 final StringBuffer result = new StringBuffer();
                 String line = "";
                 while ((line = rd.readLine()) != null)
@@ -281,7 +284,7 @@ public class Scratch {
             }
         }
     }
-    
+
     /*
      * TODO:
      * - Get list of featured projects
@@ -307,21 +310,21 @@ public class Scratch {
         in.close();
         return str.toString();
     }
-    
+
     public static String setUserAgent(final String user_agent) {
         Scratch.USER_AGENT = user_agent;
         return Scratch.USER_AGENT;
     }
-    
+
     public static List<ScratchUser> getUsers(final int limit, final int offset) throws ScratchUserException {
         if ((offset < 0) || (limit < 0))
             throw new ScratchUserException();
-        
+
         final List<ScratchUser> users = new ArrayList<>();
-        
+
         try {
             final RequestConfig globalConfig = RequestConfig.custom().setCookieSpec(CookieSpecs.DEFAULT).build();
-            
+
             final CookieStore cookieStore = new BasicCookieStore();
             final BasicClientCookie lang = new BasicClientCookie("scratchlanguage", "en");
             final BasicClientCookie debug = new BasicClientCookie("DEBUG", "true");
@@ -331,11 +334,11 @@ public class Scratch {
             lang.setDomain(".scratch.mit.edu");
             cookieStore.addCookie(lang);
             cookieStore.addCookie(debug);
-            
+
             final CloseableHttpClient httpClient = HttpClients.custom().setDefaultRequestConfig(globalConfig)
                     .setUserAgent(Scratch.USER_AGENT).setDefaultCookieStore(cookieStore).build();
             CloseableHttpResponse resp;
-            
+
             final HttpUriRequest update = RequestBuilder.get()
                     .setUri("https://scratch.mit.edu/api/v1/user/?format=json&limit=" + limit + "&offset=" + offset)
                     .addHeader("Accept", "text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,*/*;q=0.8")
@@ -349,7 +352,7 @@ public class Scratch {
                 e.printStackTrace();
                 throw new ScratchUserException();
             }
-            
+
             BufferedReader rd;
             try {
                 rd = new BufferedReader(new InputStreamReader(resp.getEntity().getContent()));
@@ -357,20 +360,20 @@ public class Scratch {
                 e.printStackTrace();
                 throw new ScratchUserException();
             }
-            
+
             final StringBuffer result = new StringBuffer();
             String line = "";
             while ((line = rd.readLine()) != null)
                 result.append(line);
             final JSONObject jsonOBJ = new JSONObject(result.toString().trim());
-            
+
             final Iterator<?> keys = jsonOBJ.keys();
-            
+
             while (keys.hasNext()) {
                 final String key = "" + keys.next();
                 final Object o = jsonOBJ.get(key);
                 final String val = "" + o;
-                
+
                 if (key.equals("objects")) {
                     final JSONArray jsonArray = (JSONArray) o;
                     for (int i = 0; i < jsonArray.length(); i++) {
@@ -379,7 +382,7 @@ public class Scratch {
                     }
                 }
             }
-            
+
             return users;
         } catch (final UnsupportedEncodingException e) {
             e.printStackTrace();
