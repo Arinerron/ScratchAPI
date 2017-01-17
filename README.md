@@ -25,7 +25,7 @@ Create a user session and log in:
 ScratchSession session = Scratch.createSession("username", "password");
 ```
 
-Register a new user (not working as of now):
+Register a new user (might now work, but it might! Try it out!):
 ```java
 ScratchSession session = Scratch.register("username", "password", "gender", birthMonth, "birthYear", "location", "the@email.here"); // All fields case sensitive-- to be documented better later...
 ```
